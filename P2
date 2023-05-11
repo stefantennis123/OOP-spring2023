@@ -1,0 +1,119 @@
+//Stefan Andrei
+#include <iostream>
+#include <fstream>
+
+class MyVector {
+private:
+    int *arr;
+    int size;
+
+public:
+    // Constructor
+    MyVector(int s=0, int val=0) {
+        size = s;
+        arr = new int[size];
+        for (int i=0; i<size; i++) {
+            arr[i] = val;
+        }
+    }
+
+    // Destructor
+    ~MyVector() {
+        delete[] arr;
+    }
+
+    // Copy Constructor
+    MyVector(const MyVector &other) {
+        size = other.size;
+        arr = new int[size];
+        for (int i=0; i<size; i++) {
+            arr[i] = other.arr[i];
+        }
+    }
+
+    // Overloading [] operator
+    int& operator[](int i) {
+        if (i<0 || i>=size) {
+            throw std::out_of_range("Index out of bounds!");
+        }
+        return arr[i];
+    }
+
+    // Overloading + operator
+    MyVector operator+(const MyVector &other) const {
+        if (size != other.size) {
+            throw std::invalid_argument("Vectors must be of equal size!");
+        }
+        MyVector result(size);
+        for (int i=0; i<size; i++) {
+            result.arr[i] = arr[i] + other.arr[i];
+        }
+        return result;
+    }
+
+    // Overloading - operator
+    MyVector operator-(const MyVector &other) const {
+        if (size != other.size) {
+            throw std::invalid_argument("Vectors must be of equal size!");
+        }
+        MyVector result(size);
+        for (int i=0; i<size; i++) {
+            result.arr[i] = arr[i] - other.arr[i];
+        }
+        return result;
+    }
+
+    // Overloading * operator
+    MyVector operator*(const MyVector &other) const {
+        if (size != other.size) {
+            throw std::invalid_argument("Vectors must be of equal size!");
+        }
+        MyVector result(size);
+        for (int i=0; i<size; i++) {
+            result.arr[i] = arr[i] * other.arr[i];
+        }
+        return result;
+    }
+
+    // Overloading / operator
+    MyVector operator/(const MyVector &other) const {
+        if (size != other.size) {
+            throw std::invalid_argument("Vectors must be of equal size!");
+        }
+        MyVector result(size);
+        for (int i=0; i<size; i++) {
+            result.arr[i] = arr[i] / other.arr[i];
+        }
+        return result;
+    }
+
+    // Overloading == operator
+    bool operator==(const MyVector &other) const {
+        if (size != other.size) {
+            return false;
+        }
+        for (int i=0; i<size; i++) {
+            if (arr[i] != other.arr[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Overloading = operator
+    MyVector& operator=(const MyVector &other) {
+        if (this == &other) {
+            return *this;
+        }
+        delete[] arr;
+        size = other.size;
+        arr = new int[size];
+        for (int i=0; i<size; i++) {
+            arr[i] = other.arr[i];
+        }
+        return *this;
+    }
+
+    friend std::ostream& operator<<(std::ostream &out, const MyVector &v) {
+        out << "[";
+        for (int i=0; i<v
