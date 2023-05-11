@@ -1,0 +1,155 @@
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+class Node {
+public:
+    int val;
+    Node* next;
+};
+
+class Vector {
+private:
+    Node* head;
+    int size;
+    bool ascending;
+
+public:
+    Vector() {
+        head = NULL;
+        size = 0;
+        ascending = true;
+    }
+
+    Vector(int* A, int size) {
+        head = NULL;
+        this->size = 0;
+        ascending = true;
+
+        for (int i = 0; i < size; i++) {
+            pushRear(A[i]);
+        }
+    }
+
+    Vector(string fileName) {
+        head = NULL;
+        size = 0;
+        ascending = true;
+
+        ifstream file(fileName);
+
+        if (file.is_open()) {
+            int val;
+            while (file >> val) {
+                pushRear(val);
+            }
+            file.close();
+        }
+    }
+
+    Vector(const Vector& other) {
+        head = NULL;
+        size = 0;
+        ascending = true;
+
+        Node* current = other.head;
+        while (current != NULL) {
+            pushRear(current->val);
+            current = current->next;
+        }
+    }
+
+    ~Vector() {
+        while (head != NULL) {
+            Node* temp = head;
+            head = head->next;
+            delete temp;
+        }
+    }
+
+    void pushFront(int val) {
+        Node* newNode = new Node();
+        newNode->val = val;
+        newNode->next = head;
+        head = newNode;
+        size++;
+    }
+
+    void pushFront(Vector other) {
+        Node* current = other.head;
+        while (current != NULL) {
+            pushFront(current->val);
+            current = current->next;
+        }
+    }
+
+    void pushRear(int val) {
+        Node* newNode = new Node();
+        newNode->val = val;
+        newNode->next = NULL;
+
+        if (head == NULL) {
+            head = newNode;
+        }
+        else {
+            Node* current = head;
+            while (current->next != NULL) {
+                current = current->next;
+            }
+            current->next = newNode;
+        }
+        size++;
+    }
+
+    void pushRear(Vector other) {
+        Node* current = other.head;
+        while (current != NULL) {
+            pushRear(current->val);
+            current = current->next;
+        }
+    }
+
+    void pushAt(int loc, int val) {
+        if (loc < 0 || loc > size - 1) {
+            return;
+        }
+
+        if (loc == 0) {
+            pushFront(val);
+        }
+        else if (loc == size - 1) {
+            pushRear(val);
+        }
+        else {
+            Node* newNode = new Node();
+            newNode->val = val;
+
+            Node* current = head;
+            for (int i = 0; i < loc - 1; i++) {
+                current = current->next;
+            }
+            newNode->next = current->next;
+            current->next = newNode;
+
+            size++;
+        }
+    }
+
+    void inOrderPush(int val) {
+        if (size == 0) {
+            pushFront(val);
+        }
+        else {
+            Node* newNode = new Node();
+            newNode->val = val;
+
+            if (ascending) {
+                if (val < head->val) {
+                    pushFront(val);
+                }
+                else {
+                    Node* current = head;
+                    while (current->next != NULL && current->next->val < val) {
+                        current = current->next;
+                    }
